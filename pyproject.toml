@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "scrapy-fusionproxy"
+version = "0.1.0"
+description = "Scrapy proxy middleware for rotating residential proxies: country targeting, sticky sessions per site, new IP on 403/429 blocks."
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.9"
+dependencies = ["scrapy>=2.8"]
+keywords = ["scrapy", "proxy", "middleware", "rotating proxy", "residential proxy", "web scraping"]
+classifiers = ["Framework :: Scrapy", "License :: OSI Approved :: MIT License", "Programming Language :: Python :: 3"]
+
+[project.urls]
+Homepage = "https://github.com/FusionProxies/scrapy-proxy-middleware"
+
+[tool.setuptools]
+packages = ["scrapy_fusionproxy"]
