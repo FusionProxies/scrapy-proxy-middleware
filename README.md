@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://fusionproxy.net/?utm_source=github&utm_medium=scrapy-proxy-middleware">
+  <a href="https://fusionproxy.net/?utm_source=github&utm_medium=referral&utm_campaign=scrapy-proxy-middleware">
     <picture>
       <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/FusionProxies/.github/main/assets/logo-on-dark.png">
       <img src="https://raw.githubusercontent.com/FusionProxies/.github/main/assets/logo-on-light.png" alt="Fusion Proxy" height="52">
@@ -16,7 +16,7 @@ A Scrapy downloader middleware that sends your crawl through rotating residentia
 - **New IP on a block**: on `403`, `429`, a captcha page or a dropped connection, the site moves to a fresh IP and the request is retried
 - **Stats** in the Scrapy log: requests, rotations, blocks per status code
 
-Made for [Fusion Proxy](https://fusionproxy.net/proxies/residential?utm_source=github&utm_medium=scrapy-proxy-middleware) residential proxies; the gateway host and port are settings, so it works with any gateway that takes options in the username.
+Made for [Fusion Proxy](https://fusionproxy.net/proxies/residential?utm_source=github&utm_medium=referral&utm_campaign=scrapy-proxy-middleware) residential proxies; the gateway host and port are settings, so it works with any gateway that takes options in the username.
 
 ## Install
 
@@ -96,13 +96,34 @@ The same site keeps its IP, and the request with `fusion_country: "de"` gets a G
 - `CONCURRENT_REQUESTS_PER_DOMAIN` above 8 on one sticky IP looks like a bot. Lower it, or use `fusion_session` keys to spread a site over several IPs.
 - Scrapy reuses proxy tunnels. Requests on one tunnel share its IP, which is what sticky sessions want; with `FUSIONPROXY_STICKY_MINUTES = 0` a new IP comes with each new connection.
 
+## Troubleshooting
+
+| What you see | Why, and what to do |
+|---|---|
+| `NotConfigured: set FUSIONPROXY_USER and FUSIONPROXY_PASS` | No credentials in `settings.py` or the environment. The middleware switches itself off |
+| `407 Proxy Authentication Required` | Wrong username or password. Copy them from the dashboard; options such as `-country-us` are added by the middleware, so leave them out of `FUSIONPROXY_USER` |
+| `fusionproxy/gave_up` in the stats | A site kept blocking after `FUSIONPROXY_MAX_ROTATIONS` new IPs. Slow down (`DOWNLOAD_DELAY`, AutoThrottle) before raising the limit |
+| `fusionproxy/connection_errors` climbing | Connections through the proxy drop or time out. Each one is retried from a new IP; check `DOWNLOAD_TIMEOUT` (30 s or more for residential IPs) |
+| Every request has the same IP | That is the sticky session. Use `FUSIONPROXY_STICKY_MINUTES = 0` to rotate, or a `fusion_session` key per account |
+
+Works with Scrapy 2.8 and newer, including the exception classes that recent Scrapy versions raise for refused connections and timeouts.
+
+## Development
+
+```bash
+pip install -e ".[test]"
+pytest
+```
+
+The tests need no network and no credentials. Besides unit tests for every setting, they run a real crawl through a local proxy that refuses or drops every connection and check that each request is retried from a new IP. Changes are listed in [CHANGELOG.md](CHANGELOG.md).
+
 ## Related
 
 - [python-requests-proxy](https://github.com/FusionProxies/python-requests-proxy): proxies in Python requests
 - [python-web-scraping](https://github.com/FusionProxies/python-web-scraping): a requests + BeautifulSoup scraper
 - [proxy-checker](https://github.com/FusionProxies/proxy-checker): check proxies from the command line
 
-Need proxies? [Fusion Proxy residential proxies](https://fusionproxy.net/proxies/residential?utm_source=github&utm_medium=scrapy-proxy-middleware) start at $2.95/GB, with a [free trial](https://fusionproxy.net/free-trial?utm_source=github&utm_medium=scrapy-proxy-middleware).
+Need proxies? [Fusion Proxy residential proxies](https://fusionproxy.net/proxies/residential?utm_source=github&utm_medium=referral&utm_campaign=scrapy-proxy-middleware) start at $2.95/GB, with a [free trial](https://fusionproxy.net/free-trial?utm_source=github&utm_medium=referral&utm_campaign=scrapy-proxy-middleware).
 
 ## License
 

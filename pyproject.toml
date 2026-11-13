@@ -4,17 +4,36 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "scrapy-fusionproxy"
-version = "0.1.0"
-description = "Scrapy proxy middleware for rotating residential proxies: country targeting, sticky sessions per site, new IP on 403/429 blocks."
+version = "0.2.0"
+description = "Scrapy proxy middleware for rotating residential proxies: country targeting, sticky sessions per site, new IP on 403/429 blocks and dropped connections."
 readme = "README.md"
 license = { text = "MIT" }
+authors = [{ name = "Fusion Proxy" }]
 requires-python = ">=3.9"
 dependencies = ["scrapy>=2.8"]
-keywords = ["scrapy", "proxy", "middleware", "rotating proxy", "residential proxy", "web scraping"]
-classifiers = ["Framework :: Scrapy", "License :: OSI Approved :: MIT License", "Programming Language :: Python :: 3"]
+keywords = ["scrapy", "scrapy middleware", "proxy", "rotating proxy", "residential proxy", "sticky session", "web scraping"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Framework :: Scrapy",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Topic :: Internet :: Proxy Servers",
+  "Topic :: Internet :: WWW/HTTP",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=8"]
 
 [project.urls]
 Homepage = "https://github.com/FusionProxies/scrapy-proxy-middleware"
+Source = "https://github.com/FusionProxies/scrapy-proxy-middleware"
+Issues = "https://github.com/FusionProxies/scrapy-proxy-middleware/issues"
+Changelog = "https://github.com/FusionProxies/scrapy-proxy-middleware/blob/main/CHANGELOG.md"
 
 [tool.setuptools]
 packages = ["scrapy_fusionproxy"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -26,15 +26,24 @@ import os
 import random
 from urllib.parse import quote, urlparse
 
+import scrapy.exceptions
 from scrapy.core.downloader.handlers.http11 import TunnelError
 from scrapy.exceptions import NotConfigured
-from twisted.internet.error import ConnectionLost, TCPTimedOutError, TimeoutError as TxTimeoutError
-from twisted.web._newclient import ResponseNeverReceived
+from twisted.internet.error import ConnectError, ConnectionDone, ConnectionLost, TimeoutError as TxTimeoutError
+from twisted.web._newclient import ResponseFailed, ResponseNeverReceived
 
 __all__ = ["FusionProxyMiddleware"]
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
-NETWORK_ERRORS = (TunnelError, ConnectionLost, TCPTimedOutError, TxTimeoutError, ResponseNeverReceived, ConnectionRefusedError)
+# Twisted's own exception classes: Twisted raises these, not Python's built-in
+# ConnectionRefusedError. ConnectError covers refused connections and TCP timeouts.
+# Newer Scrapy versions wrap them in their own exceptions.
+NETWORK_ERRORS = (TunnelError, ConnectError, ConnectionDone, ConnectionLost, TxTimeoutError,
+                  ResponseNeverReceived, ResponseFailed) + tuple(
+    getattr(scrapy.exceptions, name)
+    for name in ("DownloadConnectionRefusedError", "DownloadFailedError", "DownloadTimeoutError", "ResponseDataLossError")
+    if hasattr(scrapy.exceptions, name)
+)
 
 
 class FusionProxyMiddleware:
